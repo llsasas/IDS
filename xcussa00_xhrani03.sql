@@ -1,1 +1,12 @@
-s
+DROP TABLE UCET;
+DROP TABLE klient;
+DROP TABLE pracovnik_banky;
+DROP TABLE operace_s_uctem;
+DROP TABLE disponovani;
+
+CREATE TABLE UCET (
+    ID INT NOT NULL PRIMARY KEY,
+    DATUM_ZALOZENI DATE,
+    ZUSTATEK NUMBER(10),
+    CHECK (ZUSTATEK>0)
+);
