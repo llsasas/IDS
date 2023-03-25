@@ -1,3 +1,11 @@
+/*
+    IDS Projekt 2
+    Zadání projektu: č. 26 - Banka
+
+    Autoři: Samuel Čus   (xcussa00)
+            Jan Hranička (xhrani03)
+*/
+
 DROP TABLE KLIENT;
 DROP TABLE PRACOVNIK_BANKY;
 DROP TABLE UCET;
@@ -24,7 +32,7 @@ CREATE TABLE PRACOVNIK_BANKY (
     PRIJMENI VARCHAR(63),
     EMAIL VARCHAR(127),
     TELEFONNI_CISLO NUMERIC(9),
-    LOGIN VARCHAR(63),
+    LOGIN VARCHAR(63) NOT NULL,
     HESLO VARCHAR(127)
 );
 
@@ -73,4 +81,28 @@ CREATE TABLE OPERACE_S_UCTEM (
     FOREIGN KEY (ZADAL) REFERENCES PRACOVNIK_BANKY (ID)
 );
 
+-- Vkladani
 
+INSERT INTO PRACOVNIK_BANKY (ID, JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
+    VALUES (1, "Samuel", "Cus", "xcussa00", "xcussa00@vutbr.cz", "mnaumnauhafhaf");
+
+INSERT INTO PRACOVNIK_BANKY (ID, JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
+    VALUES (2, "Jan", "Hranicka", "xhrani03", "xhrani03@vutbr.cz", "1234");
+
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (333, "Albert", "Plagiator", "xplagi0b@oznuk.fit", "CR", "Brno");
+
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (42, "Jakub", "Terminator", "kubik@seznam.cz", "CR", "Brno");
+
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (256, "Teodor", "Gladiator", "teos@gmail.com", "CR", "Praha");
+
+INSERT INTO UCET (CISLO_UCTU, DATUM_ZALOZENI, ZUSTATEK, VLASTNIK)
+    VALUES (111333, TO_DATE('2023-03-25', 'yyyy/mm/dd'), 10000, 42);
+
+INSERT INTO UCET (CISLO_UCTU, DATUM_ZALOZENI, ZUSTATEK, VLASTNIK)
+    VALUES (199488014, TO_DATE('2023-03-24', 'yyyy/mm/dd'), 10, 333);
+
+INSERT INTO DISPONOVANI (DISPONENT, CISLO_UCTU)
+    VALUES (256, 111333);
