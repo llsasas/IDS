@@ -13,7 +13,10 @@ DROP TABLE KLIENT;
 DROP TABLE PRACOVNIK_BANKY;
 DROP SEQUENCE operace_seq;
 
--- Vztah generalizace/specializace jsme implementovali tvorbou dvou různých tabulek: KLIENT a PRACOVNIK_BANKY
+/*
+    Vztah generalizace/specializace jsme implementovali tvorbou dvou různých tabulek: KLIENT a PRACOVNIK_BANKY
+    Pro tento způsob jsme se rozhodli, protože práce s těmito tabulkami je velmi odlišná
+*/
 CREATE TABLE KLIENT (
     ID INT GENERATED AS IDENTITY NOT NULL PRIMARY KEY,
     JMENO VARCHAR(31),
