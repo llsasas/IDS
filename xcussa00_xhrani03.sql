@@ -86,20 +86,20 @@ CREATE TABLE OPERACE_S_UCTEM (
 
 -- Vkladani
 
-INSERT INTO PRACOVNIK_BANKY ( JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
-    VALUES ('Samuel', 'Cus', 'xcussa00', 'xcussa00@vutbr.cz', 'mnaumnauhafhaf');
+INSERT INTO PRACOVNIK_BANKY (ID, JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
+    VALUES (100, 'Samuel', 'Cus', 'xcussa00', 'xcussa00@vutbr.cz', 'mnaumnauhafhaf');
 
-INSERT INTO PRACOVNIK_BANKY ( JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
-    VALUES ('Jan', 'Hranicka', 'xhrani03', 'xhrani03@vutbr.cz', '1234');
+INSERT INTO PRACOVNIK_BANKY (ID, JMENO, PRIJMENI, LOGIN, EMAIL, HESLO)
+    VALUES (200, 'Jan', 'Hranicka', 'xhrani03', 'xhrani03@vutbr.cz', '1234');
 
-INSERT INTO KLIENT (JMENO, PRIJMENI, EMAIL, STAT, MESTO)
-    VALUES ('Albert', 'Plagiator', 'xplagi0b@oznuk.fit', 'CR', 'Brno');
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (1, 'Albert', 'Plagiator', 'xplagi0b@oznuk.fit', 'CR', 'Brno');
 
-INSERT INTO KLIENT (JMENO, PRIJMENI, EMAIL, STAT, MESTO)
-    VALUES ('Jakub', 'Terminator', 'kubik@seznam.cz', 'CR', 'Brno');
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (2, 'Jakub', 'Terminator', 'kubik@seznam.cz', 'CR', 'Brno');
 
-INSERT INTO KLIENT (JMENO, PRIJMENI, EMAIL, STAT, MESTO)
-    VALUES ('Teodor', 'Gladiator', 'teos@gmail.com', 'CR', 'Praha');
+INSERT INTO KLIENT (ID, JMENO, PRIJMENI, EMAIL, STAT, MESTO)
+    VALUES (42, 'Teodor', 'Gladiator', 'teos@gmail.com', 'CR', 'Praha');
 
 INSERT INTO UCET (CISLO_UCTU, DATUM_ZALOZENI, ZUSTATEK, VLASTNIK)
     VALUES (2816,TO_DATE('2023-03-25', 'yyyy/mm/dd'), 10000, 1);
