@@ -146,13 +146,18 @@ SELECT K.ID, K.JMENO, K.PRIJMENI, COUNT(U.CISLO_UCTU) AS POCET_UCTU
     FROM KLIENT K JOIN UCET U ON U.VLASTNIK = K.ID
     GROUP BY K.ID, K.JMENO, K.PRIJMENI;
     
-    -- Na kterem ze svych uctu ma klient nejmene penez a kolik? 
+-- Na kterém ze svých úètù má klient nejménì prostøedkù a jaká je to èáskta? 
 SELECT U.CISLO_UCTU,K.JMENO, K.PRIJMENI, MIN(U.ZUSTATEK) AS MINIMALNI_ZUSTATEK
     FROM KLIENT K JOIN UCET U ON U.VLASTNIK = K.ID
         GROUP BY K.JMENO, K.PRIJMENI, U.CISLO_UCTU;
-    -- Kteri klienti si zalozili ucet v roce 2020?
+        
+-- Kteøí klienti si založili úèet v roce 2020?
 SELECT K.JMENO, K.PRIJMENI 
     FROM Klient K 
         WHERE EXISTS(SELECT * FROM UCET U WHERE TO_CHAR(DATUM_ZALOZENI, 'YYYY')='2020' AND U.VLASTNIK = K.ID);
-
+        
+--Kteøí klienti disponují nìjakým úètem?
+SELECT K.JMENO, K.PRIJMENI 
+    FROM KLIENT K 
+        WHERE K.ID IN (SELECT DISPONENT FROM DISPONOVANI);
     
