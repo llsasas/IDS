@@ -96,21 +96,23 @@ GRANT ALL ON DISPONOVANI TO xhrani03;
 
 
 
-/*CREATE OR REPLACE TRIGGER prepocitej_zustatek
+CREATE OR REPLACE TRIGGER prepocitej_zustatek
     AFTER INSERT ON OPERACE_S_UCTEM
-    REFERENCING OLD AS PUVODNI NEW AS NOVY
+    REFERENCING NEW AS NOVY
     FOR EACH ROW
+DECLARE
+    stara_castka NUMERIC(10)
 BEGIN
-    IF NOVY.TYP = 'vklad' THEN
-        UPDATE UCET SET ZUSTATEK = ZUSTATEK + :NOVY.CASTKA
-        WHERE UCET.CISLO_UCTU = :NOVY.CISLO_UCTU;
+    SELECT U.ZUSTATEK INTO stara_castka FROM UCET U WHERE U.CISLO_UCTU = :NOVY.CISLO_UCTU;
+
+    IF :NOVY.TYP = 'vklad' THEN
+        UPDATE UCET SET ZUSTATEK = stara_castka + :NOVY.CASTKA;
     ELSE
-        UPDATE UCET SET ZUSTATEK = ZUSTATEK - :NOVY.CASTKA
-        WHERE UCET.CISLO_UCTU = :NOVY.CISLO_UCTU;
+        UPDATE UCET SET ZUSTATEK = stara_castka - :NOVY.CASTKA;
     END IF;
 END;
 /
-*/
+
 CREATE OR REPLACE TRIGGER vloz_datum
     BEFORE INSERT ON UCET
     REFERENCING NEW AS NOVY
@@ -121,6 +123,7 @@ BEGIN
     END IF;
 END;
 /
+
 
 --DROP TRIGGER prepocitej_zustatek;
 
@@ -195,17 +198,17 @@ SELECT K.ID, K.JMENO, K.PRIJMENI, COUNT(U.CISLO_UCTU) AS POCET_UCTU
     FROM KLIENT K JOIN UCET U ON U.VLASTNIK = K.ID
     GROUP BY K.ID, K.JMENO, K.PRIJMENI;
     
--- Na kterém ze svých úètù má klient nejménì prostøedkù a jaká je to èáskta? 
+-- Na kterï¿½m ze svï¿½ch ï¿½ï¿½tï¿½ mï¿½ klient nejmï¿½nï¿½ prostï¿½edkï¿½ a jakï¿½ je to ï¿½ï¿½skta? 
 SELECT U.CISLO_UCTU,K.JMENO, K.PRIJMENI, MIN(U.ZUSTATEK) AS MINIMALNI_ZUSTATEK
     FROM KLIENT K JOIN UCET U ON U.VLASTNIK = K.ID
         GROUP BY K.JMENO, K.PRIJMENI, U.CISLO_UCTU;
         
--- Kteøí klienti si založili úèet v roce 2020?
+-- Kteï¿½ï¿½ klienti si zaloï¿½ili ï¿½ï¿½et v roce 2020?
 SELECT K.JMENO, K.PRIJMENI 
     FROM Klient K 
         WHERE EXISTS(SELECT * FROM UCET U WHERE TO_CHAR(DATUM_ZALOZENI, 'YYYY')='2020' AND U.VLASTNIK = K.ID);
         
---Kteøí klienti disponují nìjakým úètem?
+--Kteï¿½ï¿½ klienti disponujï¿½ nï¿½jakï¿½m ï¿½ï¿½tem?
 SELECT K.JMENO, K.PRIJMENI 
     FROM KLIENT K 
         WHERE K.ID IN (SELECT DISPONENT FROM DISPONOVANI);
