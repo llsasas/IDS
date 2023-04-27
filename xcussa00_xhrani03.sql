@@ -125,6 +125,107 @@ END;
 /
 
 
+-- PROCEDURES
+
+-- vypise, kterych operaci nad uctem bzlo provedeno nejvic
+CREATE OR REPLACE PROCEDURE operaci_nad_uctem(identifikator_uctu UCET.CISLO_UCTU%TYPE)
+AS
+    CURSOR typ_kurzor IS SELECT TYP FROM OPERACE_S_UCTEM;
+    typ_operace OPERACE_S_UCTEM.TYP%TYPE;
+    p_vkladu NUMBER;
+    p_vyberu NUMBER;
+    p_prevodu NUMBER;
+BEGIN
+
+    p_vkladu := 0;
+    p_vyberu := 0;
+    p_prevodu := 0;
+
+    OPEN typ_kurzor;
+    LOOP
+    FETCH typ_kurzor INTO typ_operace;
+        CASE
+            WHEN typ_operace = 'vklad' THEN p_vkladu := p_vkladu + 1;
+            WHEN typ_operace = 'vyber' THEN p_vyberu := p_vyberu + 1;
+            WHEN typ_operace = 'prevod' THEN p_prevodu := p_prevodu + 1;
+        END;
+        IF typ_operace = 'vklad' THEN p_vkladu := p_vkladu + 1;
+        ELSIF typ_operace = 'vyber' THEN p_vyberu := p_vyberu + 1;
+        ELSIF typ_operace = 'prevod' THEN p_prevodu := p_prevodu + 1;
+        END IF;
+    END LOOP;
+    CLOSE typ_kurzor;
+
+    IF p_vkladu = p_vyberu THEN
+        IF p_prevodu > p_vkladu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl převod.' );
+        ELSIF p_prevodu < p_vkladu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl vklad a výběr.' );
+        ELSE
+            DBMS_OUTPUT.put_line( 'Všechny operace se provedli stejněkrát.' );
+        END IF;
+
+    ELSIF p_vkladu > p_vyberu THEN
+        IF p_prevodu > p_vkladu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl převod.' );
+        ELSIF p_prevodu < p_vkladu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl vklad.' );
+        ELSE
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl vklad a převod.' );
+        END IF;
+
+    ELSE
+        IF p_prevodu > p_vyberu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl převod.' );
+        ELSIF p_prevodu < p_vyberu THEN
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl výběr.' );
+        ELSE
+            DBMS_OUTPUT.put_line( 'Nejvíckrát se provedl výběr a převod.' );
+        END IF;
+    END IF;
+
+END;
+
+
+-- obnos klienta na uctech, ktere vlastni
+CREATE OR REPLACE PROCEDURE obnos_klienta(jmeno_klienta IN VARCHAR, prijmeni_klienta IN VARCHAR)
+AS
+    CURSOR zustatky IS SELECT VLASTNIK, ZUSTATEK FROM UCET;
+    id_klienta KLIENT.ID%TYPE;
+    id_vlastnika KLIENT.ID%TYPE;
+    z UCET.ZUSTATEK%TYPE;
+    obnos NUMBER;
+BEGIN
+
+    obnos := 0;
+
+    SELECT ID INTO id_klienta FROM KLIENT K WHERE K.JMENO = jmeno_klienta AND K.PRIJMENI = prijmeni_klienta; 
+
+    OPEN zustatky;
+    LOOP
+    FETCH zustatky INTO id_vlastnika, z;
+        EXIT WHEN zustatky%NOTFOUND;
+
+        IF id_vlastnika = id_klienta THEN
+            obnos := obnos + z;
+        END IF;
+    END LOOP;
+    CLOSE zustatky;
+
+    DBMS_OUTPUT.put_line(
+        jmeno_klienta || ' ' || prijmeni_klienta || ' má na vlastněných účtech ' || obnos || ' peněz'
+    );
+
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+    BEGIN
+        DBMS_OUTPUT.put_line(
+            'Klient s identifikatorem ' || id_klienta || ' neexistuje!'
+        );
+    END;
+END;
+
+
+
 --DROP TRIGGER prepocitej_zustatek;
 
 -- Vkladani
