@@ -187,6 +187,35 @@ BEGIN
 END;
 
 
+-- vypise pocet uctu, se kterymi pracoval dany pracovnik banky
+CREATE OR REPLACE PROCEDURE pocet_zpracovanych_uctu (login IN PRACOVNIK_BANKY.LOGIN)
+AS
+    celkovy_pocet NUMBER;
+    id_pracovnika PRACOVNIK_BANKY.ID%TYPE;
+BEGIN
+    SELECT PB.ID INTO id_pracovnika FROM PRACOVNIK_BANKY PB
+        WHERE PB.LOGIN = login
+        FETCH FIRST 1 ROW ONLY;
+
+    SELECT COUNT(OU.CISLO_UCTU) INTO celkovy_pocet FROM PRACOVNIK_BANKY PB
+        JOIN OPERACE_S_UCTEM OU ON OU.ZADAL = PB.ID
+        GROUP BY PB.ID
+        HAVING PB.ID = id_pracovnika;
+
+    DBMS_OUTPUT.put_line( 
+        'Pracovník ' || login || ' provadel operace nad celkove ' || celkovy_pocet || ' ucty.' 
+    );
+
+    EXCEPTION WHEN NO_DATA_FOUND THEN
+    BEGIN
+        DBMS_OUTPUT.put_line(
+            'Pracovník s loginem ' || login || ' neexistuje!'
+        );
+    END;
+
+END;
+
+
 -- obnos klienta na uctech, ktere vlastni
 CREATE OR REPLACE PROCEDURE obnos_klienta(jmeno_klienta IN VARCHAR, prijmeni_klienta IN VARCHAR)
 AS
@@ -219,14 +248,11 @@ BEGIN
     EXCEPTION WHEN NO_DATA_FOUND THEN
     BEGIN
         DBMS_OUTPUT.put_line(
-            'Klient s identifikatorem ' || id_klienta || ' neexistuje!'
+            'Klient ' || jmeno_klienta || ' ' || prijmeni_klienta || ' neexistuje!'
         );
     END;
 END;
 
-
-
---DROP TRIGGER prepocitej_zustatek;
 
 -- Vkladani
 
