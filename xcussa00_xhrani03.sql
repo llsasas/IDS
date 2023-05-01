@@ -212,7 +212,6 @@ BEGIN
             'Pracovník s loginem ' || login || ' neexistuje!'
         );
     END;
-
 END;
 
 
