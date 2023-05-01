@@ -291,6 +291,20 @@ INSERT INTO OPERACE_S_UCTEM (CISLO_UCTU, DATUM, TYP, CASTKA, MENA, PROVEDL, ZADA
 INSERT INTO OPERACE_S_UCTEM (CISLO_UCTU, DATUM, TYP, CASTKA, MENA, CILOVY_UCET, PROVEDL, ZADAL)
     VALUES (111331, TO_DATE('2023-03-25', 'yyyy/mm/dd'), 'prevod', 100, 'czk', 111111, 200, 42);
     
+
+-- SELECT WITH: v jake kategorii je obnos klienta na vlastnenych uctech (vysoky, stredni, nizky)
+WITH klient_s_obnosem AS (
+    SELECT K.ID AS id_klienta, SUM(U.ZUSTATEK) AS soucet
+    FROM KLIENT K JOIN UCET U ON K.ID = U.VLASTNIK
+    GROUP BY K.ID )
+SELECT id_klienta,
+    CASE soucet
+        WHEN soucet < 1000 THEN 'nizky'
+        WHEN soucet < 10000 THEN 'stredni'
+        ELSE 'vysoky'
+    END kategorie
+FROM klient_s_obnosem;
+
 -- MATERIALIZED VIEW   
 
 CREATE MATERIALIZED VIEW POCET_UCTU_KLIENTA
